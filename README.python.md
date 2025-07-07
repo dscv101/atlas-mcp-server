@@ -157,9 +157,6 @@ For stdio transport:
 # Install development dependencies
 uv pip install -e ".[dev]"
 
-# Install pre-commit hooks
-pre-commit install
-
 # Run tests
 pytest
 

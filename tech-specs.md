@@ -109,7 +109,6 @@ pytest-mock = "^3.12.0"
 ruff = "^0.1.0"
 black = "^23.12.0"
 mypy = "^1.8.0"
-pre-commit = "^3.6.0"
 mkdocs = "^1.5.0"
 mkdocs-material = "^9.5.0"
 ```
@@ -146,7 +145,7 @@ class Project(BaseModel):
     task_type: str = Field(..., min_length=1, max_length=100)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     class Config:
         json_encoders = {
             datetime: lambda v: v.isoformat()
@@ -295,23 +294,23 @@ class ServiceResult(BaseModel):
 class BaseService(ABC):
     def __init__(self, db_manager: 'DatabaseManager'):
         self.db = db_manager
-    
+
     @abstractmethod
     async def create(self, entity: BaseModel) -> ServiceResult:
         pass
-    
+
     @abstractmethod
     async def get_by_id(self, entity_id: str) -> ServiceResult:
         pass
-    
+
     @abstractmethod
     async def update(self, entity_id: str, updates: Dict[str, Any]) -> ServiceResult:
         pass
-    
+
     @abstractmethod
     async def delete(self, entity_id: str) -> ServiceResult:
         pass
-    
+
     @abstractmethod
     async def list_all(self, filters: Optional[Dict[str, Any]] = None) -> ServiceResult:
         pass
@@ -329,18 +328,18 @@ class DatabaseManager:
         self.db_path = db_path
         self.db: Optional[kuzu.Database] = None
         self.conn: Optional[kuzu.Connection] = None
-    
+
     async def initialize(self):
         """Initialize database connection and schema"""
         self.db = kuzu.Database(self.db_path)
         self.conn = kuzu.Connection(self.db)
         await self._create_schema()
-    
+
     async def _create_schema(self):
         """Create database schema if not exists"""
         # Schema creation logic here
         pass
-    
+
     @asynccontextmanager
     async def transaction(self):
         """Context manager for database transactions"""
@@ -351,12 +350,12 @@ class DatabaseManager:
         except Exception:
             self.conn.rollback()
             raise
-    
+
     async def execute_query(self, query: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
         """Execute a Cypher query and return results"""
         result = self.conn.execute(query, params or {})
         return [dict(record) for record in result]
-    
+
     async def close(self):
         """Close database connection"""
         if self.conn:
@@ -394,10 +393,10 @@ class Settings(BaseSettings):
     app_name: str = "ATLAS MCP Server"
     app_version: str = "3.0.0"
     environment: str = "development"
-    
+
     database: DatabaseSettings = DatabaseSettings()
     mcp: MCPSettings = MCPSettings()
-    
+
     class Config:
         env_file = ".env"
         env_nested_delimiter = "__"
